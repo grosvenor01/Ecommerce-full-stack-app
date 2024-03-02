@@ -3,7 +3,32 @@
 This API provides CRUD operations for managing clients, products, wishlists, carts, reviews, and orders.
 
 ## Endpoints
+### Authentication (register) 
 
+- **Endpoint**: `/register/`
+- **Method**: POST
+- **Description**: Register a user.
+- **Example Request (Create)**:
+    ```json
+    {
+        "username": "your name",
+        "email": "email@gmail.com",
+        "password": "your password",
+    }
+    ```
+    
+### Authentication (login) 
+
+- **Endpoint**: `/login/`
+- **Method**: POST
+- **Description**: login a user and generate a unique token for him.
+- **Example Request (Create)**:
+    ```json
+    {
+        "username": "your name",
+        "password": "your password",
+    }
+    ```
 ### Clients
 
 #### List/Create Clients
