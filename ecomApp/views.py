@@ -5,7 +5,12 @@ from rest_framework.response import Response
 from knox.views import LoginView as KnoxLoginView
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.contrib.auth import login
-
+from rest_framework.views import APIView
+from django.http import JsonResponse
+from django.db.models import Q
+import stripe  
+from django.shortcuts import redirect
+from django.conf import settings
 class register(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     def post(self, request, *args, **kwargs):
@@ -59,7 +64,7 @@ class WishlistListCreateView(generics.ListCreateAPIView):
 class WishlistDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = wishlist.objects.all()
     serializer_class = WishlistSerializer
-
+        
 class CartListCreateView(generics.ListCreateAPIView):
     queryset = cart.objects.all()
     serializer_class = CartSerializer
@@ -83,3 +88,41 @@ class OrderListCreateView(generics.ListCreateAPIView):
 class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = order.objects.all()
     serializer_class = OrderSerializer
+
+class payment(APIView):
+    pass
+class search(APIView):
+    def get(self, request):
+        text = request.data["Text"]
+        
+        #Q objects to combine filters
+        title_filter = Q(title__contains=text)
+        description_filter = Q(description__contains=text)
+        filters = product.objects.filter(title_filter | description_filter)
+        if request.data.get("max_price"):
+            filters = filters.filter(price__lte=request.data["max_price"])
+        
+        # Serializing the queryset
+        serialized_data = ProductSerializer(filters, many=True).data
+        
+        return JsonResponse(serialized_data, status=200 , safe=False)
+class StripCheckoutView(APIView): 
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    def post(self,request):
+        try:
+            checkout_session = stripe.checkout.Session.create(
+                line_items=[
+                     {
+                    'quantity': request.data.get("quantity"),
+                    'price':product.objects.get(id=request.data.get(id)),
+                },
+                ],
+                mode="payment",
+                payment_method_types =['card',],
+                success_url=request.build_absolute_uri('?success=true&session_id={CHECKOUT_SESSION_ID}'),
+                cancel_url=request.build_absolute_uri('?canceled=true'),
+            )
+        except Exception as e:
+            return Response({"error":"Product doesn't exist"+str(e)} , status = 500)
+        return JsonResponse({"checkout_url": checkout_session.url})
+                
