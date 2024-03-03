@@ -201,3 +201,27 @@ This API provides CRUD operations for managing clients, products, wishlists, car
         "products": [2, 3, 4]
     }
     ```
+
+#### Search
+- **Endpoint**: `/search/`
+- **Method**: POST
+- **Description**: search a product based on user's specification.
+- **Example Request**:
+    ```json
+    {
+        "Text": "title or keywords",
+        "max_price" : 13.15 (optionel)
+    }
+    ```
+
+#### Search
+- **Endpoint**: `/stripe/`
+- **Method**: POST
+- **Description**: redirect a user to a chekout page (stripe) using the id of .
+- **Example Request**:
+    ```json
+    {
+        "quantity": 5,
+        "id" : 2 (product id)
+    }
+    ```
