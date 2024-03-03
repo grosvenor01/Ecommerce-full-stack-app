@@ -21,12 +21,13 @@ class product(models.Model):
     photo_add4=models.ImageField(upload_to="./product_pic/",blank=True , null = True)
     state = models.CharField(max_length=20,choices=(("pending","pending"),("shipping","shipping"),("complete","complete")))
     rating = models.FloatField(validators=[MinValueValidator(0.0),MaxValueValidator(5.0)])
+    price_stripe = models.CharField(max_length=200,null=True, blank=True)
 class wishlist(models.Model):
     user = models.OneToOneField(User , on_delete = models.CASCADE)
-    products = models.ManyToManyField(product)
+    products = models.ManyToManyField(product , null =True)
 class cart(models.Model):
     user = models.OneToOneField(User , on_delete = models.CASCADE)
-    products = models.ForeignKey(product,on_delete = models.CASCADE)
+    products = models.ManyToManyField(product,null=True)
     total_price = models.FloatField(validators=[MinValueValidator(0.0)])
     coupone = models.TextField() #use t to store coupoune separed by , (handel it in the API)
 class Review(models.Model):

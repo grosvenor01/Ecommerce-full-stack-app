@@ -40,5 +40,8 @@ urlpatterns = [
     
     path('orders/', OrderListCreateView.as_view(), name='order-list-create'),
     path('orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
+
+    path('search/', search.as_view(), name='search-product'),
+    path("stripe/",StripCheckoutView.as_view(),name="stripe"),
 ]
 
