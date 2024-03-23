@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import './App.css'
-import { Button } from '@chakra-ui/react'
 import Navbar from './navbar'
-
+import Cardl from './card'
 function App() {
 
   return (
     <>
       
-      <Navbar/>
+      <Cardl/>
+      
     </>
   )
 }
