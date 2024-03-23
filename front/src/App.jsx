@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import './App.css'
-import Navbar from './navbar'
-import Cardl from './card'
-import Homepage from './homepage'
+import Navbar from './homepage/navbar'
+import Cardl from './homepage/card'
+import Homepage from './homepage/homepage'
 
 
 function App() {
