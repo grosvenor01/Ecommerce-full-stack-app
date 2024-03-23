@@ -10,7 +10,7 @@ import { SearchIcon } from '@chakra-ui/icons'
 import { HStack, VStack } from '@chakra-ui/react'
 const Navbar = () => {
   return (<>
-    <Box boxSize='lr' mt={"1rem"} >
+    <Box boxSize='lr'  width={"100%"} >
 
 
     <HStack  spacing='24px' >
