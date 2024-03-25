@@ -9,7 +9,7 @@ import Fashen from '../assets/sidebar/fashen.svg'
 import Cuisin from '../assets/sidebar/cuisin.svg'
 
 import CustomCard from './card'
-import Navbar from './navbar'
+import Navbar from '../navbar'
 import Pagination from './pagination'
 
 // const Pagination = ({ nPages, currentPage, setCurrentPage }) => {
@@ -29,7 +29,7 @@ import Pagination from './pagination'
 const Homepage = () => {
   return (
     <>
-    <Grid mt={"1rem"} mb={"1rem"} 
+    <Grid  mb={"1rem"} 
   templateAreas={`
   "nav nav"
   "header header"

@@ -1,3 +1,8 @@
+*,*::after,*::before{
+    box-sizing: border-box; 
+
+}
+
 body{
     padding: 0 2rem;
 }
@@ -12,6 +17,7 @@ body{
 
 }
 .page-link{
+/* color: rgb(112, 112, 112); */
 color: rgb(255, 255, 255);
 height: 3rem;
 display: flex;
