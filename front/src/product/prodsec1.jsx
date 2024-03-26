@@ -1,5 +1,5 @@
-import React from 'react'
-import { Grid, GridItem ,Box,Image,Text,HStack, Center} from '@chakra-ui/react'
+// import React from 'react'
+import { Grid, GridItem ,Box,Image,Text,HStack} from '@chakra-ui/react'
 import Navbar from "../navbar";
 import imagemain from "../assets/oneproduct/imagemain.png";
 import image1 from "../assets/oneproduct/image1.png";

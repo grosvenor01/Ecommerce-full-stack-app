@@ -1,5 +1,5 @@
-import React from 'react'
-import { Grid, GridItem,Box,Text } from '@chakra-ui/react'
+// import React from 'react'
+import { Grid, GridItem,Text } from '@chakra-ui/react'
 import Filter from './filter'
 import Tropy from '../assets/sidebar/trophy.svg'
 import Stats from '../assets/sidebar/stats.svg'
