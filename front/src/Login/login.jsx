@@ -33,7 +33,7 @@ const Login = () => {
 
 
         </HStack>
-        <Button padding={"1rem 5rem"} fontWeight={"light"} backgroundColor={"#0366FF"}>Button</Button>
+        <Button padding={"1rem 5rem"} fontWeight={"light"} backgroundColor={"#0366FF"}>Register</Button>
           {/* TODO THIS IS GOING TO BE A LINK */}
           <Text>Dont have an account <span style={{ color: "#0366FF" }}>register</span></Text>
 

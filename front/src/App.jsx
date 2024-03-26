@@ -3,7 +3,7 @@ import './App.css'
 
 // import Product from './product/product'
 import Homepage from './homepage/homepage'
-import Register from "./register/register";
+import Notfound from "./Notfound/notfound";
 import  {  useEffect } from 'react';
 
 const App = () =>{
@@ -20,7 +20,7 @@ const App = () =>{
   return (
     <>
       
-      <Register/>
+      <Notfound/>
       
     </>
   )
