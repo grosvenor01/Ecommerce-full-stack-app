@@ -1,5 +1,4 @@
 import { Box, HStack,Text,VStack,Image } from '@chakra-ui/react'
-import React from 'react'
 import CustomCard from "../homepage/card";
 import imageg1 from "../assets/oneproduct/imageg1.png";
 import imageg2 from "../assets/oneproduct/imageg2.png";
