@@ -3,7 +3,7 @@ import './App.css'
 
 // import Product from './product/product'
 import Homepage from './homepage/homepage'
-import Login from "./Login/login";
+import Register from "./register/register";
 import  {  useEffect } from 'react';
 
 const App = () =>{
@@ -20,7 +20,7 @@ const App = () =>{
   return (
     <>
       
-      <Login/>
+      <Register/>
       
     </>
   )

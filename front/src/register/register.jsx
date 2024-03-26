@@ -6,20 +6,21 @@ import google from "../assets/auth/google.png";
 import meta from "../assets/auth/meta.png";
 import line from "../assets/auth/line.svg";
 
-const Login = () => {
+const Register = () => {
   return (
 <Box mt={"2rem"}>
 <Navbar/>
 
     <Box display={"flex"} justifyContent={"center"} bg >
-      <VStack width={"470px"}h={"495px"}  borderRadius={"3px"} mt={'2rem'} bg={"#202020"} p={"1rem"}>
+      <VStack width={"470px"}h={"550px"}  borderRadius={"3px"} mt={'2rem'} bg={"#202020"} p={"1rem"}>
         <Text fontWeight={"bold"} fontSize={"30px"} width={"100%"} >
-          Log in
+          Register
         </Text>
 
-        <Input m={"1rem 0"} width={"80%"} htmlSize={4}  placeholder='Email' h={"3.3rem"} />
+        <Input mt={"1rem"} width={"80%"} htmlSize={4}  placeholder='Username' h={"3.3rem"}  mb={"0.5rem"}/>
+        <Input type='password' width={"80%"} htmlSize={4}  placeholder='Email' h={"3.3rem"}  mb={"0.5rem"} />
+        <Input width={"80%"}  htmlSize={4} placeholder='Password' h={"3.3rem"} mb={"1rem"} />
 
-        <Input type='password' width={"80%"}  htmlSize={4} placeholder='Password' h={"3.3rem"} mb={"2rem"} />
         <HStack>
         <Text>Or connect with </Text>
 
@@ -35,7 +36,7 @@ const Login = () => {
         </HStack>
         <Button padding={"1rem 5rem"} fontWeight={"light"} backgroundColor={"#0366FF"}>Button</Button>
           {/* TODO THIS IS GOING TO BE A LINK */}
-          <Text>Dont have an account <span style={{ color: "#0366FF" }}>register</span></Text>
+          <Text>Already have an account  <span style={{ color: "#0366FF" }}>login</span></Text>
 
       </VStack>
     </Box>
@@ -44,4 +45,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Register
