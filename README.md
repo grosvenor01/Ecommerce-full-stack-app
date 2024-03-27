@@ -57,10 +57,6 @@ This API provides CRUD operations for managing clients, products, wishlists, car
         "address": "456 Oak St",
         "info_livraison": "Updated delivery instructions",
         "photo": "path/to/picture",
-        "photo_add1" : "path/to/picture", (optionel)
-        "photo_add2" : "path/to/picture", (optionel)
-        "photo_add3" : "path/to/picture", (optionel)
-        "photo_add4" : "path/to/picture"  (optionel)
     }
     ```
 
@@ -77,7 +73,11 @@ This API provides CRUD operations for managing clients, products, wishlists, car
         "description": "Product description",
         "title": "Product Title",
         "price": 19.99,
-        "photo": "base64-encoded-image",
+        "photo": "path/to/picture",
+        "photo_add1" : "path/to/picture", (optionel)
+        "photo_add2" : "path/to/picture", (optionel)
+        "photo_add3" : "path/to/picture", (optionel)
+        "photo_add4" : "path/to/picture",  (optionel)
         "state": "pending",
         "rating": 4.5
     }
