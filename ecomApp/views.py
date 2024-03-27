@@ -6,7 +6,7 @@ from knox.views import LoginView as KnoxLoginView
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.contrib.auth import login
 from rest_framework.views import APIView
-from django.http import JsonResponse
+from django.http import JsonResponse , HttpResponse
 from django.db.models import Q
 import stripe  
 from django.shortcuts import redirect
@@ -80,6 +80,10 @@ class ReviewListCreateView(generics.ListCreateAPIView):
 class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    def get(self , request , pk ):
+        review =  Review.objects.filter(product_signified=pk)
+        serialized_review = ReviewSerializer(review, many=True)
+        return Response(serialized_review.data, status=200)
 
 class OrderListCreateView(generics.ListCreateAPIView):
     queryset = order.objects.all()
@@ -109,20 +113,43 @@ class search(APIView):
 class StripCheckoutView(APIView): 
     stripe.api_key = settings.STRIPE_SECRET_KEY
     def post(self,request):
+        localhost_url = 'http://localhost:8000'
         try:
+            line_items = []
+            for item in request.data:
+                product_id = item.get('id')
+                quantity = item.get('quantity')
+                line_item = {
+                    'quantity': quantity,
+                    'price': product.objects.get(id=product_id).price_stripe,
+                }
+                line_items.append(line_item)
             checkout_session = stripe.checkout.Session.create(
-                line_items=[
-                     {
-                    'quantity': request.data.get("quantity"),
-                    'price':product.objects.get(id=request.data.get(id)),
-                },
-                ],
+                line_items=line_items,
                 mode="payment",
                 payment_method_types =['card',],
-                success_url=request.build_absolute_uri('?success=true&session_id={CHECKOUT_SESSION_ID}'),
-                cancel_url=request.build_absolute_uri('?canceled=true'),
+                success_url= f'{localhost_url}/admin',
+                cancel_url=f'{localhost_url}/admin',
             )
         except Exception as e:
             return Response({"error":"Product doesn't exist"+str(e)} , status = 500)
         return JsonResponse({"checkout_url": checkout_session.url})
+    
+def success_callback(request):
+    session_id = request.GET.get('session_id')
+    items = request.data
+    session = stripe.checkout.Session.retrieve(session_id)
+    order_add = order.objects.create(user=request.user)
+
+    # Add products to the order based on the items in the request
+    for item in items:
+        product_id = item.get('id')
+        quantity = item.get('quantity')
+        product_instance = product.objects.get(id=product_id)
+        order_add.products.add(product_instance)
+
+    order_add.total_price = sum(product.price_stripe for product in order.products.all())
+    order.save()
+
+    return HttpResponse("Success!")
                 
