@@ -42,7 +42,7 @@ This API provides CRUD operations for managing clients, products, wishlists, car
         "phone_number": "+1234567890",
         "address": "123 Main St",
         "info_livraison": "Delivery instructions",
-        "photo": "base64-encoded-image"
+        "photo": "path/to/picture"
     }
     ```
 
@@ -56,7 +56,11 @@ This API provides CRUD operations for managing clients, products, wishlists, car
         "phone_number": "+9876543210",
         "address": "456 Oak St",
         "info_livraison": "Updated delivery instructions",
-        "photo": "base64-encoded-image"
+        "photo": "path/to/picture",
+        "photo_add1" : "path/to/picture", (optionel)
+        "photo_add2" : "path/to/picture", (optionel)
+        "photo_add3" : "path/to/picture", (optionel)
+        "photo_add4" : "path/to/picture"  (optionel)
     }
     ```
 
