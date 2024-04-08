@@ -40,10 +40,18 @@ INSTALLED_APPS = [
     'ecomApp.apps.EcomappConfig',
     'rest_framework',
     'knox',
+    'corsheaders',
+
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+     "corsheaders.middleware.CorsMiddleware",
+
+
+
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -126,3 +134,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51NVH0wGt8K1SPn6ZUjneBpALJjoSPmoklMeFOKf76Tul5iVQMmFO8ovLtSpwEzEThwUb5zNc3q9t3ZuMFx8rdAQM00AP7F4DtS'
 STRIPE_SECRET_KEY = 'sk_test_51NVH0wGt8K1SPn6ZyV8BgPpxIzciGbNv0AM9EEsvm1fCY9C3S3IBDMvDqyJLvt7UEaBdfwZutzi7TPqod4Stp9ux00M498U8LM'
+
+
+
+CORS_ALLOW_ALL_ORIGINS = True

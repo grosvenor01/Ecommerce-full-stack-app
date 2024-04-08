@@ -1,4 +1,3 @@
-// import React from 'react'
 import { Grid, GridItem,Text } from '@chakra-ui/react'
 import Filter from './filter'
 import Tropy from '../assets/sidebar/trophy.svg'
@@ -7,19 +6,13 @@ import Coron from '../assets/sidebar/coron.svg'
 import Lectro from '../assets/sidebar/lectro.svg'
 import Fashen from '../assets/sidebar/fashen.svg'
 import Cuisin from '../assets/sidebar/cuisin.svg'
-
+import { Link } from 'react-router-dom';
 import CustomCard from './card'
 import Navbar from '../navbar'
 import Pagination from './pagination'
 
-// const Pagination = ({ nPages, currentPage, setCurrentPage }) => {
-
-// .poppins-thin {
-//     font-family: "Poppins", sans-serif;
-//     font-weight: 100;
-//     font-style: normal;
-//   }
-
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 
 
 
@@ -27,6 +20,24 @@ import Pagination from './pagination'
 
 
 const Homepage = () => {
+  const [products, setProducts] = useState([]);
+
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/products/');
+        setProducts(response.data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        console.error('patata patata');
+      }
+    }
+
+    fetchProducts();
+  }, []);
+  
+
   return (
     <>
     <Grid  mb={"1rem"} 
@@ -92,114 +103,40 @@ const Homepage = () => {
   templateColumns='repeat(4, 1fr)'
   gap={4}
 >
-  <GridItem rowSpan={2} colSpan={1} >
-    
-    <CustomCard 
-  imageUrl='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-  title='Product Title'
-  description='Product Description'
-  price={100}
-/>
-  </GridItem>
-  <GridItem rowSpan={2} colSpan={1} >
-    
-    <CustomCard 
-  imageUrl='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-  title='Product Title'
-  description='Product Description'
-  price={100}
-/>
-  </GridItem>
-  <GridItem rowSpan={2} colSpan={1} >
-    
-    <CustomCard 
-  imageUrl='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-  title='Product Title'
-  description='Product Description'
-  price={100}
-/>
-  </GridItem>
-  <GridItem rowSpan={2} colSpan={1} >
-    
-    <CustomCard 
-  imageUrl='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-  title='Product Title'
-  description='Product Description'
-  price={100}
-/>
-  </GridItem>
-  <GridItem rowSpan={2} colSpan={1} >
-    
-    <CustomCard 
-  imageUrl='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-  title='Product Title'
-  description='Product Description'
-  price={100}
-/>
-  </GridItem>
-  <GridItem rowSpan={2} colSpan={1} >
-    
-    <CustomCard 
-  imageUrl='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-  title='Product Title'
-  description='Product Description'
-  price={100}
-/>
-  </GridItem>
-  <GridItem rowSpan={2} colSpan={1} >
-    
-    <CustomCard 
-  imageUrl='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-  title='Product Title'
-  description='Product Description'
-  price={100}
-/>
-  </GridItem>
-  <GridItem rowSpan={2} colSpan={1} >
-    
-    <CustomCard 
-  imageUrl='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-  title='Product Title'
-  description='Product Description'
-  price={100}
-/>
-  </GridItem>
-  <GridItem rowSpan={2} colSpan={1} >
-    
-    <CustomCard 
-  imageUrl='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-  title='Product Title'
-  description='Product Description'
-  price={100}
-/>
-  </GridItem>
-  <GridItem rowSpan={2} colSpan={1} >
-    
-    <CustomCard 
-  imageUrl='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-  title='Product Title'
-  description='Product Description'
-  price={100}
-/>
-  </GridItem>
-  <GridItem rowSpan={2} colSpan={1} >
-    
-    <CustomCard 
-  imageUrl='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-  title='Product Title'
-  description='Product Description'
-  price={100}
-/>
-  </GridItem>
-  <GridItem rowSpan={2} colSpan={1} >
-    
-    <CustomCard 
-  imageUrl='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-  title='Product Title'
-  description='Product Description'
-  price={100}
-/>
-  </GridItem>
+
+
+
+
+
+
+
+
+
+  {products.map(product => (
+        <GridItem key={product.id} rowSpan={2} colSpan={1}>
+          <Link to={`/products/${product.id}`}> {/* Use Link to wrap CustomCard */}
+          <CustomCard
+          id={product.id}
+            imageUrl={product.photo}
+            title={product.title}
+            description={product.description}
+            price={product.price}
+          />
+          </Link>
+        </GridItem>
+      ))}
+
+
+<a href=""></a>
+
+
+
+
+
+
+
+
+
  
  
 </Grid>

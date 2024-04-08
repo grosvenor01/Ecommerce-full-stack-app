@@ -1,6 +1,3 @@
-import { Box } from '@chakra-ui/react'
-import React from 'react'
-import Navbar from '../navbar'
 
 import Prodsec1 from './prodsec1'
 import Prodsec2 from './prodsec2'
