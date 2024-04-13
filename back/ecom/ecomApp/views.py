@@ -66,7 +66,7 @@ class WishlistListCreateView(generics.ListCreateAPIView):
     serializer_class = WishlistSerializer1
 
 class WishlistDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Wishlist.objects.all()
+    queryset = wishlist.objects.all()
     serializer_class = WishlistSerializer
     def get(self , request , pk):
         user_id = self.kwargs['pk']
