@@ -38,6 +38,11 @@ class logine(KnoxLoginView):
 class userview(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = user_serializer
+    def get(self , request , pk):
+        user_id = self.kwargs['pk']
+        query = User.objects.filter(id=user_id)
+        serializer = user_serializer(query,many=True)
+        return Response(serializer.data,status = 200)
 
 class ClientListCreateView(generics.ListCreateAPIView):
     queryset = client.objects.all()
