@@ -35,6 +35,9 @@ class logine(KnoxLoginView):
         response.set_cookie("login_token",response.data["token"],path="/",max_age=3600*24*365,samesite='Lax')
         response.data['id'] = user.id
         return response
+class userview(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = user_serializer
 
 class ClientListCreateView(generics.ListCreateAPIView):
     queryset = client.objects.all()
