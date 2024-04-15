@@ -6,13 +6,24 @@ import Coron from '../assets/sidebar/coron.svg'
 import Lectro from '../assets/sidebar/lectro.svg'
 import Fashen from '../assets/sidebar/fashen.svg'
 import Cuisin from '../assets/sidebar/cuisin.svg'
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import CustomCard from './card'
-import Navbar from '../navbar'
 import Pagination from './pagination'
 
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+
+// nv
+
+import { Link } from 'react-router-dom';
+import { Box, Image, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
+import { SearchIcon } from '@chakra-ui/icons';
+import { HStack } from '@chakra-ui/react';
+import Cart from '../assets/cart.svg';
+import Points from '../assets/points.svg';
+import Racklogo from '../assets/Racklogo.svg';
+import Profile from '../assets/profile.svg';
+import Heart from '../assets/heart.svg';
 
 
 
@@ -57,7 +68,33 @@ const Homepage = () => {
 
 >
 <GridItem display={"flex"}  area={'nav'} justifyContent={"center"} alignItems={"center"} >
-    <Navbar/>
+<Box boxSize='lr' width="100%">
+      <HStack spacing='24px'>
+        <Link to="/">
+          <Image className="navlogohover" src={Racklogo} alt='Rack logo' />
+        </Link>
+        <InputGroup bg="" width="75%" alignItems="center">
+          <InputLeftElement pointerEvents='none'>
+            <SearchIcon mt="10px" color='white' />
+          </InputLeftElement>
+          <Input height="3rem" borderRadius="20px" type='text' placeholder='Search product' />
+        </InputGroup>
+        <HStack spacing='24px'>
+          <Link to="/profile">
+            <Image className='navimghover' src={Profile} alt='Rack logo' />
+          </Link>
+          <Link to="/favorits">
+            <Image className='navimghover' src={Heart} alt='Rack logo' />
+          </Link>
+          <Link to="/cart">
+            <Image className='navimghover' src={Cart} alt='Rack logo' />
+          </Link>
+          <Link to="/points">
+            <Image className='navimghover' src={Points} alt='Rack logo' />
+          </Link>
+        </HStack>
+      </HStack>
+    </Box>
   </GridItem>
   <GridItem display={"flex"} alignItems={"center"} pl='60'  area={'header'} fontSize={"48px"} fontWeight='bold'>
   Discover Most Suitable products
@@ -114,7 +151,7 @@ const Homepage = () => {
 
   {products.map(product => (
         <GridItem key={product.id} rowSpan={2} colSpan={1}>
-          <Link to={`/products/${product.id}`}> {/* Use Link to wrap CustomCard */}
+          {/* <Link to={`/products/${product.id}`}>  */}
           <CustomCard
           id={product.id}
             imageUrl={product.photo}
@@ -122,7 +159,7 @@ const Homepage = () => {
             description={product.description}
             price={product.price}
           />
-          </Link>
+          {/* </Link> */}
         </GridItem>
       ))}
 

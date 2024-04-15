@@ -1,6 +1,6 @@
 
 
-import  { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import axios from 'axios';
 import { Box, VStack, Input, Text, HStack, Image } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
@@ -25,8 +25,12 @@ const Login = () => {
         withCredentials: true
       });
       if (response.status === 200) {
-        console.log('Login successful:', response.data);
+        console.log('Login successful:', response.data.id);
+        console.log('Token:', response.data.token);
 
+        // Store user ID and token in local storage
+        localStorage.setItem('userId', response.data.id);
+        localStorage.setItem('token', response.data.token);
 
         // Trigger click event on hidden link upon successful login
         hiddenLinkRef.current.click();
@@ -77,6 +81,7 @@ const Login = () => {
             <Image onClick={() => console.log("hello")} className='navlogohover' src={appel} />
           </HStack>
           <Button padding={"1rem 5rem"} fontWeight={"light"} backgroundColor={"#0366FF"} onClick={handleLogin}>Login</Button>
+          <Text>do not have an account <Link to="/register" style={{ color: "#0366FF" }}>register</Link></Text>
           {/* Hidden Link for redirecting to /register */}
           <Link to="/profile" style={{ display: 'none' }} ref={hiddenLinkRef}></Link>
         </VStack>

@@ -35,6 +35,14 @@ class logine(KnoxLoginView):
         response.set_cookie("login_token",response.data["token"],path="/",max_age=3600*24*365,samesite='Lax')
         response.data['id'] = user.id
         return response
+class userview(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = user_serializer
+    def get(self , request , pk):
+        user_id = self.kwargs['pk']
+        query = User.objects.filter(id=user_id)
+        serializer = user_serializer(query,many=True)
+        return Response(serializer.data,status = 200)
 
 class ClientListCreateView(generics.ListCreateAPIView):
     queryset = client.objects.all()
@@ -65,6 +73,11 @@ class WishlistListCreateView(generics.ListCreateAPIView):
 class WishlistDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = wishlist.objects.all()
     serializer_class = WishlistSerializer
+    def get(self , request , pk):
+        user_id = self.kwargs['pk']
+        query = wishlist.objects.filter(user__id=user_id)
+        serializer = WishlistSerializer(query,many=True)
+        return Response(serializer.data,status = 200)
         
 class CartListCreateView(generics.ListCreateAPIView):
     queryset = cart.objects.all()
