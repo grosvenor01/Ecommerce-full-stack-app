@@ -114,13 +114,13 @@ This API provides CRUD operations for managing clients, products, wishlists, car
     ```
 
 #### Retrieve/Update/Delete Wishlist
-- **Endpoint**: `/wishlists/<int:pk>/`
+- **Endpoint**: `/wishlists/<int:pk>/`  (user id)
 - **Method**: GET, PUT, DELETE
 - **Description**: Retrieve, update, or delete a specific wishlist.
 - **Example Request (Update)**:
     ```json
     {
-        "products": [2, 3, 4]
+        "products_id": 2    // here we give the product id to add , delete to the wishlist of a user 
     }
     ```
 
@@ -141,15 +141,13 @@ This API provides CRUD operations for managing clients, products, wishlists, car
     ```
 
 #### Retrieve/Update/Delete Cart
-- **Endpoint**: `/carts/<int:pk>/`
+- **Endpoint**: `/carts/<int:pk>/`   (user id)
 - **Method**: GET, PUT, DELETE
 - **Description**: Retrieve, update, or delete a specific cart.
 - **Example Request (Update)**:
     ```json
     {
-        "products": [2, 3, 4],
-        "total_price": 59.99,
-        "coupone": "NEWCOUPON456"
+        "product_id":3 //same as wishlists
     }
     ```
 
