@@ -8,6 +8,8 @@ import Login from './Login/login';
 import Register from './register/register';
 import Notfound from './Notfound/notfound';
 import Product from './product/product';
+import MyComponent from './search';
+
 
 const App = () => {
   const checkThemeInLocalStorage = () => {
@@ -27,6 +29,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/favorits" element={<Profile />} />
+        <Route path="/search" element={<MyComponent />} />
         {/* Catch-all route for unmatched paths */}
         <Route path="*" element={<Notfound />} />
       </Routes>
