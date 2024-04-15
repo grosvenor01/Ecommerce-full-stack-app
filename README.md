@@ -208,7 +208,7 @@ This API provides CRUD operations for managing clients, products, wishlists, car
 
 #### Search
 - **Endpoint**: `/search/`
-- **Method**: POST
+- **Method**: GET
 - **Description**: search a product based on user's specification.
 - **Example Request**:
     ```json
