@@ -23,6 +23,7 @@ urlpatterns = [
     path('register/',register.as_view(),name="register"),
     path("login/", logine.as_view(),name="login"),
     #google authentication should done in the forntend (remember)
+    path('users/<int:pk>', userview.as_view(), name='user-list'),
     path('clients/', ClientListCreateView.as_view(), name='client-list-create'),
     path('clients/<int:pk>/', ClientDetailView.as_view(), name='client-detail'),
 

@@ -33,7 +33,12 @@ class WishlistSerializer(serializers.ModelSerializer):
         model = wishlist
         fields = '__all__'
 
+class CartSerializer1(serializers.ModelSerializer):
+    class Meta:
+        model = cart
+        fields = '__all__'
 class CartSerializer(serializers.ModelSerializer):
+    products = ProductSerializer(many=True, read_only=True)
     class Meta:
         model = cart
         fields = '__all__'
