@@ -206,7 +206,7 @@ This API provides CRUD operations for managing clients, products, wishlists, car
 
 #### Search
 - **Endpoint**: `/search/`
-- **Method**: GET
+- **Method**: POST
 - **Description**: search a product based on user's specification.
 - **Example Request**:
     ```json
@@ -216,7 +216,7 @@ This API provides CRUD operations for managing clients, products, wishlists, car
     }
     ```
 
-#### Search
+#### Chekout
 - **Endpoint**: `/stripe/`
 - **Method**: POST
 - **Description**: redirect a user to a chekout page (stripe) using the id of .
