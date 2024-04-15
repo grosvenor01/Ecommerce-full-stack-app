@@ -1,0 +1,3 @@
+pip install stripe
+pip install django-rest-knox
+pip install djangorestframework
