@@ -32,7 +32,20 @@ import Heart from '../assets/heart.svg';
 
 const Homepage = () => {
   const [products, setProducts] = useState([]);
-
+  const [searchText, setSearchText] = useState('');
+  
+  const handleInputChange = async (event) => {
+    const text = event.target.value;
+    setSearchText(text);
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/search/', { Text: text });
+      setProducts(response.data);
+      console.log(response.data); // Print the response data
+      setProducts(response.data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   useEffect(() => {
     async function fetchProducts() {
@@ -67,35 +80,45 @@ const Homepage = () => {
 //   fontWeight={"900"}
 
 >
-<GridItem display={"flex"}  area={'nav'} justifyContent={"center"} alignItems={"center"} >
-<Box boxSize='lr' width="100%">
-      <HStack spacing='24px'>
-        <Link to="/">
-          <Image className="navlogohover" src={Racklogo} alt='Rack logo' />
-        </Link>
-        <InputGroup bg="" width="75%" alignItems="center">
-          <InputLeftElement pointerEvents='none'>
-            <SearchIcon mt="10px" color='white' />
-          </InputLeftElement>
-          <Input height="3rem" borderRadius="20px" type='text' placeholder='Search product' />
-        </InputGroup>
-        <HStack spacing='24px'>
-          <Link to="/profile">
-            <Image className='navimghover' src={Profile} alt='Rack logo' />
+<GridItem display="flex" area="nav" justifyContent="center" alignItems="center">
+      <Box boxSize="lr" width="100%">
+        <HStack spacing="24px">
+          <Link to="/">
+            <Image className="navlogohover" src={Racklogo} alt="Rack logo" />
           </Link>
-          <Link to="/favorits">
-            <Image className='navimghover' src={Heart} alt='Rack logo' />
-          </Link>
-          <Link to="/cart">
-            <Image className='navimghover' src={Cart} alt='Rack logo' />
-          </Link>
-          <Link to="/points">
-            <Image className='navimghover' src={Points} alt='Rack logo' />
-          </Link>
+          <InputGroup bg="" width="75%" alignItems="center"   onChange={handleInputChange}>
+            <InputLeftElement pointerEvents="none">
+              <SearchIcon mt="10px" color="white" />
+            </InputLeftElement >
+            <Input
+              height="3rem"
+              borderRadius="20px"
+              type="text"
+              placeholder="Search product"
+              value={searchText}
+            />
+          </InputGroup>
+          <HStack spacing="24px">
+            <Link to="/profile">
+              <Image className="navimghover" src={Profile} alt="Profile" />
+            </Link>
+            <Link to="/favorits">
+              <Image className="navimghover" src={Heart} alt="Favorites" />
+            </Link>
+            <Link to="/cart">
+              <Image className="navimghover" src={Cart} alt="Cart" />
+            </Link>
+            <Link to="/points">
+              <Image className="navimghover" src={Points} alt="Points" />
+            </Link>
+          </HStack>
         </HStack>
-      </HStack>
-    </Box>
-  </GridItem>
+      </Box>
+    </GridItem>
+
+
+
+
   <GridItem display={"flex"} alignItems={"center"} pl='60'  area={'header'} fontSize={"48px"} fontWeight='bold'>
   Discover Most Suitable products
   </GridItem>

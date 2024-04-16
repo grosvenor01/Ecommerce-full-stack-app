@@ -110,7 +110,7 @@ class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
 class payment(APIView):
     pass
 class search(APIView):
-    def get(self, request):
+    def post(self, request):
         text = request.data["Text"]
         
         #Q objects to combine filters

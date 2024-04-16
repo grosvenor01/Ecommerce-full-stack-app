@@ -11,6 +11,8 @@ import {
   Image
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
+
 
 const CustomCard = ({ imageUrl, title, description, price, id }) => {
   // Split the description into words
@@ -23,12 +25,26 @@ const CustomCard = ({ imageUrl, title, description, price, id }) => {
   const displayDescription =
     words.length > 4 ? truncatedDescription + '...' : truncatedDescription;
 
-  const handleAddToCart = () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('You are not logged in. Please log in to add items to the cart.');
-    } else {
-      console.log('Item added to the cart:', title);
+  // const handleAddToCart = () => {
+  //   const token = localStorage.getItem('token');
+  //   if (!token) {
+  //     alert('You are not logged in. Please log in to add items to the cart.');
+  //   } else {
+  //     console.log('Item added to the cart:', title);
+  //   }
+  // };
+
+
+
+  const addToCart = async () => {
+    try {
+      const data = {
+        "products_id": 20   // here we give the product id to add , delete to the wishlist of a user 
+    }
+      const response = await axios.get('http://127.0.0.1:8000/wishlists/12/',data);
+      console.log(response.data); // Print the response data
+    } catch (error) {
+      console.error('Error:', error);
     }
   };
 
@@ -57,7 +73,7 @@ const CustomCard = ({ imageUrl, title, description, price, id }) => {
               Buy now
             </Button>
           </Link>
-          <Button variant='ghost' colorScheme='blue' onClick={handleAddToCart}>
+          <Button variant='ghost' colorScheme='blue' onClick={addToCart}>
             Add to cart
           </Button>
         </ButtonGroup>

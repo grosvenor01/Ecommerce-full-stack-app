@@ -8,8 +8,7 @@ const MyComponent = () => {
   const sendData = async () => {
     try {
       const data = {
-        Text: "title or keywords",
-        max_price: 13.15 
+        Text: "Samsung"
       };
 
       const response = await axios.post('http://127.0.0.1:8000/search/', data);
