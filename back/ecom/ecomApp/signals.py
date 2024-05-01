@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save , pre_save
+from django.db.models.signals import post_save , pre_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from .models import *
@@ -8,9 +8,9 @@ from django.conf import settings
 def perssonel_wishlist_cart(sender , instance , created , **kwargs):
     if created:
         wishlist.objects.create(user=instance)
-        cart.objects.create(user=instance,total_price=0.0 , coupone ="")
+        Cart.objects.create(user=instance,total_price=0.0)
 
-@receiver(pre_save , sender=product)
+@receiver(pre_save , sender=Product)
 def add_to_stripe(sender, instance, **kwargs):
     if instance._state.adding: 
         stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -25,3 +25,12 @@ def add_to_stripe(sender, instance, **kwargs):
             currency='usd',
         )
         instance.price_stripe = price.id
+
+@receiver(post_save, sender=CartProduct)
+def handle_cart_update(sender, instance, **kwargs):
+    instance.update_cart_total()
+
+@receiver(post_delete, sender=CartProduct)
+def handle_cart_delete(sender, instance, **kwargs):
+    # After deletion, instance.cart is not accessible, pass the cart as argument
+    instance.update_cart_total(cart=instance.cart)

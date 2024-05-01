@@ -1,5 +1,5 @@
 from rest_framework import generics ,permissions
-from .models import client, product, wishlist, cart, Review, order
+from .models import client, Product, wishlist, Cart, Review, Order
 from .serializer import *
 from rest_framework.response import Response
 from knox.views import LoginView as KnoxLoginView
@@ -9,8 +9,12 @@ from rest_framework.views import APIView
 from django.http import JsonResponse , HttpResponse
 from django.db.models import Q
 import stripe  
+from knox.auth import TokenAuthentication
 from django.shortcuts import redirect
 from django.conf import settings
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from django.db import transaction
+
 class register(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     def post(self, request, *args, **kwargs):
@@ -59,11 +63,11 @@ class ClientDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ClientSerializer
 
 class ProductListCreateView(generics.ListCreateAPIView):
-    queryset = product.objects.all()
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = product.objects.all()
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 class WishlistListCreateView(generics.ListCreateAPIView):
@@ -80,12 +84,18 @@ class WishlistDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Response(serializer.data,status = 200)
         
 class CartListCreateView(generics.ListCreateAPIView):
-    queryset = cart.objects.all()
+    queryset = Cart.objects.all()
     serializer_class = CartSerializer
 
 class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = cart.objects.all()
     serializer_class = CartSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def get_object(self):
+        # Ensures that a user can only access their own cart
+        cart, _ = Cart.objects.get_or_create(user=self.request.user)
+        return cart
 
 class ReviewListCreateView(generics.ListCreateAPIView):
     queryset = Review.objects.all()
@@ -100,12 +110,59 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Response(serialized_review.data, status=200)
 
 class OrderListCreateView(generics.ListCreateAPIView):
-    queryset = order.objects.all()
+    queryset = Order.objects.all()
     serializer_class = OrderSerializer1
 
 class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = order.objects.all()
+    queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+class CartProductCreateView(generics.CreateAPIView):
+    queryset = CartProduct.objects.all()
+    serializer_class = CartProductSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def perform_create(self, serializer):
+        product_id = self.request.data.get('product_id')
+        quantity = self.request.data.get('quantity')
+        product = Product.objects.get(id=product_id)
+
+        if product.quantity < quantity:
+            raise serializers.ValidationError("Insufficient stock available")
+        
+        existing_item = CartProduct.objects.filter(cart__user=self.request.user, product_id=product_id).first()
+        if existing_item:
+            existing_item.quantity += 1
+            existing_item.save()
+        else:
+            cart, _ = Cart.objects.get_or_create(user=self.request.user)
+            serializer.save(cart=cart, product=product, quantity=quantity)
+
+class CartProductUpdateView(generics.UpdateAPIView): #/api/cart-items/{cart_item_id}/
+    queryset = CartProduct.objects.all()
+    serializer_class = CartProductSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def perform_update(self, serializer):
+        cart_product = serializer.instance  # This gets the specific CartProduct based on the <int:pk> in the URL
+        new_quantity = serializer.validated_data['quantity']
+        print(new_quantity, cart_product.product.quantity)
+        if new_quantity > cart_product.product.quantity:
+            raise serializers.ValidationError({
+                "quantity": "Insufficient stock available. Only {} units of '{}' are available.".format(cart_product.product.quantity, cart_product.product.title)
+            })
+
+        # Assuming you only update quantity and no other fields for CartProduct
+        cart_product.quantity = new_quantity
+        cart_product.save()
+
+class CartProductDeleteView(generics.DestroyAPIView):
+    queryset = CartProduct.objects.all()
+    serializer_class = CartProductSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
 class payment(APIView):
     pass
@@ -116,7 +173,7 @@ class search(APIView):
         #Q objects to combine filters
         title_filter = Q(title__contains=text)
         description_filter = Q(description__contains=text)
-        filters = product.objects.filter(title_filter | description_filter)
+        filters = Product.objects.filter(title_filter | description_filter)
         if request.data.get("max_price"):
             filters = filters.filter(price__lte=request.data["max_price"])
         
@@ -124,46 +181,120 @@ class search(APIView):
         serialized_data = ProductSerializer(filters, many=True).data
         
         return JsonResponse(serialized_data, status=200 , safe=False)
-class StripCheckoutView(APIView): 
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-    def post(self,request):
-        localhost_url = 'http://localhost:8000'
+    
+# class StripCheckoutView(APIView): 
+#     stripe.api_key = settings.STRIPE_SECRET_KEY
+#     def post(self,request):
+#         localhost_url = 'http://localhost:8000'
+#         try:
+#             line_items = []
+#             for item in request.data:
+#                 product_id = item.get('id')
+#                 quantity = item.get('quantity')
+#                 line_item = {
+#                     'quantity': quantity,
+#                     'price': product.objects.get(id=product_id).price_stripe,
+#                 }
+#                 line_items.append(line_item)
+#             checkout_session = stripe.checkout.Session.create(
+#                 line_items=line_items,
+#                 mode="payment",
+#                 payment_method_types =['card',],
+#                 success_url= f'{localhost_url}/admin',
+#                 cancel_url=f'{localhost_url}/admin',
+#             )
+#         except Exception as e:
+#             return Response({"error":"Product doesn't exist"+str(e)} , status = 500)
+#         return JsonResponse({"checkout_url": checkout_session.url})
+    
+class StripCheckoutView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def post(self, request):
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        localhost_url = 'http://localhost:5173'
+
         try:
+            cart = Cart.objects.get(user=request.user)
             line_items = []
-            for item in request.data:
-                product_id = item.get('id')
-                quantity = item.get('quantity')
+
+            for item in cart.items.all():
+                if item.product.quantity < item.quantity:
+                    return Response({"error": f"Insufficient stock for {item.product.title}"}, status=400)
+
                 line_item = {
-                    'quantity': quantity,
-                    'price': product.objects.get(id=product_id).price_stripe,
+                    'quantity': item.quantity,
+                    'price': item.product.price_stripe,
                 }
                 line_items.append(line_item)
+
             checkout_session = stripe.checkout.Session.create(
+
+                customer_email=request.user.email,
                 line_items=line_items,
                 mode="payment",
-                payment_method_types =['card',],
-                success_url= f'{localhost_url}/admin',
-                cancel_url=f'{localhost_url}/admin',
+                payment_method_types=['card'],
+                success_url=f'{localhost_url}/success?session_id={{CHECKOUT_SESSION_ID}}',
+                cancel_url=f'{localhost_url}/cancel',
             )
+
         except Exception as e:
-            return Response({"error":"Product doesn't exist"+str(e)} , status = 500)
+            return Response({"error": "Error creating Stripe checkout session" + str(e)}, status=500)
+
         return JsonResponse({"checkout_url": checkout_session.url})
     
+# def success_callback(request):
+#     session_id = request.GET.get('session_id')
+#     session = stripe.checkout.Session.retrieve(session_id)
+
+#     if session.payment_status == "paid":
+#         cart = Cart.objects.get(user=request.user)
+#         order = Order.objects.create(
+#             user=request.user,
+#             total_price=cart.total_price
+#         )
+
+#         for item in cart.items.all():
+#             OrderProduct.objects.create(
+#                 order=order,
+#                 product=item.product,
+#                 quantity=item.quantity
+#             )
+#             # Update product stock
+#             product = item.product
+#             product.quantity -= item.quantity
+#             product.save()
+
+#         cart.items.all().delete()  # Clear the cart
+#         return HttpResponse(f"Order {order.id} created successfully!")
+#     else:
+#         return HttpResponse("Payment was not successful")
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def success_callback(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
     session_id = request.GET.get('session_id')
-    items = request.data
-    session = stripe.checkout.Session.retrieve(session_id)
-    order_add = order.objects.create(user=request.user)
 
-    # Add products to the order based on the items in the request
-    for item in items:
-        product_id = item.get('id')
-        quantity = item.get('quantity')
-        product_instance = product.objects.get(id=product_id)
-        order_add.products.add(product_instance)
-
-    order_add.total_price = sum(product.price_stripe for product in order.products.all())
-    order.save()
-
-    return HttpResponse("Success!")
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+        if session.payment_status == "paid":
+            with transaction.atomic():
+                cart = Cart.objects.select_related().get(user=request.user)
+                if not all(item.product.quantity >= item.quantity for item in cart.items.all()):
+                    return JsonResponse({"error": "Insufficient stock available for one of the products"}, status=400)
                 
+                order = Order.objects.create(user=request.user, total_price=cart.total_price)
+                for item in cart.items.all():
+                    OrderProduct.objects.create(order=order, product=item.product, quantity=item.quantity)
+                    item.product.quantity -= item.quantity
+                    item.product.save()
+
+                cart.items.all().delete()  # Clear the cart
+                return JsonResponse({"message": f"Order {order.id} created successfully!"})
+        else:
+            return JsonResponse({"error": "Payment was not successful"}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": "Error processing your payment: " + str(e)}, status=500)

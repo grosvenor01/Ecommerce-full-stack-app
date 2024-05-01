@@ -9,6 +9,9 @@ import Register from './register/register';
 import Notfound from './Notfound/notfound';
 import Product from './product/product';
 import MyComponent from './search';
+import ShoppingCart from './checkout/shoppingCart';
+import SuccessPage from './checkout/SuccessPage';
+import CancelPage from './checkout/CancelPage';
 
 
 const App = () => {
@@ -30,6 +33,9 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/favorits" element={<Profile />} />
         <Route path="/search" element={<MyComponent />} />
+        <Route path="/cart" element={<ShoppingCart />}/>
+        <Route path="/success" element={<SuccessPage />} />
+        <Route path="/cancel" element={<CancelPage />} />
         {/* Catch-all route for unmatched paths */}
         <Route path="*" element={<Notfound />} />
       </Routes>

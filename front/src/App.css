@@ -3,10 +3,6 @@
 
 }
 
-body{
-    padding: 0 2rem;
-}
-
 .navimghover:hover{
     transform: scale(1.05);
     transition: transform 0.2s;

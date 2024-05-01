@@ -5,7 +5,7 @@ import { Grid, GridItem,Text } from '@chakra-ui/react'
 import Navbar from "../navbar";
 const Notfound = () => {
   return (
-    <Box mt={"2rem"}>
+    <Box mt={"2rem"} padding={"0 2rem"}>
     <Navbar/>
   
     <Box fontFamily={"Poppins , sans-serif"} h={"42rem"} display={"flex"} justifyContent={"center"}>

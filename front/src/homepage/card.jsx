@@ -36,17 +36,24 @@ const CustomCard = ({ imageUrl, title, description, price, id }) => {
 
 
 
-  const addToCart = async () => {
+  const addToCart = async (productId) => {
     try {
       const data = {
-        "products_id": 20   // here we give the product id to add , delete to the wishlist of a user 
-    }
-      const response = await axios.get('http://127.0.0.1:8000/wishlists/12/',data);
-      console.log(response.data); // Print the response data
+        "product_id": productId, // Dynamic product ID to add
+        "quantity": 1  // Assuming a default quantity of 1
+      };
+      const token = localStorage.getItem('token'); // Get auth token from storage
+      console.log('Token:', token); // Print the token
+      const response = await axios.post('http://127.0.0.1:8000/cart-items/', data, {
+        headers: {
+          'Authorization': `Token ${token}` // Ensure requests are authenticated
+        }
+      });
+      console.log('Product added to cart:', response.data); // Print the response data
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error adding product to cart:', error);
     }
-  };
+  };  
 
   return (
     <Card maxW='250px'>
@@ -73,7 +80,7 @@ const CustomCard = ({ imageUrl, title, description, price, id }) => {
               Buy now
             </Button>
           </Link>
-          <Button variant='ghost' colorScheme='blue' onClick={addToCart}>
+          <Button variant='ghost' colorScheme='blue' onClick={() => addToCart(id)}>
             Add to cart
           </Button>
         </ButtonGroup>

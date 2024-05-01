@@ -42,7 +42,7 @@ const Profile = () => {
   }, []); // Empty dependency array to run the effect only once on component mount
 
   return (
-    <Box mt={"2rem"}>
+    <Box mt={"2rem"} padding={"0 2rem"}>
       <Link to="/login" ref={hiddenLinkRef} style={{ display: 'none' }}>Redirecting to login...</Link>
       <Navbar/>
       <Box>

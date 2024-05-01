@@ -20,23 +20,24 @@ class ClientSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
-        model = product
+        model = Product
         fields = '__all__'
 
 class WishlistSerializer1(serializers.ModelSerializer):
     class Meta:
         model = wishlist
         fields = '__all__'
+
 class WishlistSerializer(serializers.ModelSerializer):
     products = ProductSerializer(many=True, read_only=True)
     class Meta:
         model = wishlist
         fields = '__all__'
 
-class CartSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = cart
-        fields = '__all__'
+# class CartSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Cart
+#         fields = '__all__'
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,12 +46,39 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class OrderSerializer1(serializers.ModelSerializer):
     class Meta:
-        model = order
+        model = Order
+        fields = '__all__'
+
+# class OrderSerializer(serializers.ModelSerializer):
+#     products = ProductSerializer(many=True,read_only=True)
+
+#     class Meta:
+#         model = Order
+#         fields = '__all__'
+# NEW, EXPERIMENTING
+
+class CartProductSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+
+    class Meta:
+        model = CartProduct
+        fields = ['id', 'product', 'quantity']
+
+class CartSerializer(serializers.ModelSerializer):
+    items = CartProductSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Cart
+        fields = ['id', 'total_price', 'items']
+
+class OrderProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderProduct
         fields = '__all__'
 
 class OrderSerializer(serializers.ModelSerializer):
-    products = ProductSerializer(many=True,read_only=True)
+    products = OrderProductSerializer(many=True, read_only=True, source='orderproduct_set')
 
     class Meta:
-        model = order
-        fields = '__all__'
+        model = Order
+        fields = ['id', 'total_price', 'products', 'state']

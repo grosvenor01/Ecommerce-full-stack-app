@@ -34,7 +34,11 @@ urlpatterns = [
     path('wishlists/<int:pk>/', WishlistDetailView.as_view(), name='wishlist-detail'),
 
     path('carts/', CartListCreateView.as_view(), name='cart-list-create'),
-    path('carts/<int:pk>/', CartDetailView.as_view(), name='cart-detail'),
+    path('cart/', CartDetailView.as_view(), name='cart-detail'),
+
+    path('cart-items/', CartProductCreateView.as_view(), name='cart-item-create'),
+    path('cart-items/<int:pk>/', CartProductUpdateView.as_view(), name='cart-item-update'),
+    path('cart-items/<int:pk>/delete/', CartProductDeleteView.as_view(), name='cart-item-delete'),
 
     path('reviews/', ReviewListCreateView.as_view(), name='review-list-create'),
     path('reviews/<int:pk>/', ReviewDetailView.as_view(), name='review-detail'),
@@ -44,5 +48,6 @@ urlpatterns = [
 
     path('search/', search.as_view(), name='search-product'),
     path("stripe/",StripCheckoutView.as_view(),name="stripe"),
+    path("success", success_callback, name="success"),
 ]
 

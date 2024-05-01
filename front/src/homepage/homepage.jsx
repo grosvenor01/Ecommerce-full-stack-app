@@ -78,7 +78,7 @@ const Homepage = () => {
 //   fontFamily={"serif"}
   fontFamily={"Poppins , sans-serif"}
 //   fontWeight={"900"}
-
+padding={"0 2rem"}
 >
 <GridItem display="flex" area="nav" justifyContent="center" alignItems="center">
       <Box boxSize="lr" width="100%">
