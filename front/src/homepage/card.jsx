@@ -8,14 +8,19 @@ import {
   Text,
   Button,
   ButtonGroup,
-  Image
+  Image,
+  IconButton
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { useToast } from '@chakra-ui/react'
+import { useEffect, useState } from 'react';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 
 const CustomCard = ({ imageUrl, title, description, price, id }) => {
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   // Split the description into words
   const words = description.split(' ');
 
@@ -27,8 +32,30 @@ const CustomCard = ({ imageUrl, title, description, price, id }) => {
     words.length > 4 ? truncatedDescription + '...' : truncatedDescription;
     const toast = useToast()
 
-
-
+    const isProductInWishlist = async (productId) => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`http://127.0.0.1:8000/wishlists/check/${productId}/`, {
+          headers: {
+            'Authorization': `Token ${token}`,
+          },
+        });
+        console.log(response.data)
+        return response.data.is_in_wishlist;
+      } catch (error) {
+        console.error('Error checking wishlist:', error);
+        throw error;
+      }
+    }
+    useEffect(() => {
+      const checkWishlist = async () => {
+        const inWishlist = await isProductInWishlist(id);
+        console.log(inWishlist);
+        setIsInWishlist(inWishlist);
+      };
+  
+      checkWishlist();
+    }, [id]);
 
   const addToCart = async (productId) => {
     try {
@@ -54,7 +81,87 @@ const CustomCard = ({ imageUrl, title, description, price, id }) => {
     } catch (error) {
       console.error('Error adding product to cart:', error);
     }
-  };  
+  };
+
+  const addToWishlist = async (productId) => {
+    try {
+      setIsAnimating(true);
+      const response = await axios.post(`http://127.0.0.1:8000/wishlist/`, {
+        product_id: productId,
+      },
+    {
+      headers: {
+        'Authorization': `Token ${localStorage.getItem('token')}`, // Ensure requests are authenticated
+        'Content-Type': 'application/json'
+      }
+    }
+    );
+      setIsInWishlist(true);
+      toast({
+        title: 'Success',
+        description: 'Added to wishlist!',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: `Failed to add to wishlist: ${error.response.data.message}`,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsAnimating(false);
+    }
+  };
+
+  const removeFromWishlist = async (productId) => {
+    try {
+      setIsAnimating(true);
+      const response = await axios.delete(`http://127.0.0.1:8000/wishlist/?product_id=${productId}`,
+      {
+        headers: {
+          'Authorization': `Token ${localStorage.getItem('token')}`, // Ensure requests are authenticated
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+      setIsInWishlist(false);
+      toast({
+        title: 'Success',
+        description: 'Removed from wishlist!',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: `Failed to remove from wishlist: ${error.response.data.message}`,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsAnimating(false);
+    }
+  };
+
+
+  const handleHeartClick = () => {
+    if (isInWishlist) {
+      removeFromWishlist(id);
+    } else {
+      addToWishlist(id);
+    }
+  };
+
+  // Add this CSS for the heart animation
+  const heartAnimation = isAnimating
+    ? 'animate-ping duration-500'
+    : '';
 
   return (
     <Card maxW='250px'>
@@ -84,6 +191,11 @@ const CustomCard = ({ imageUrl, title, description, price, id }) => {
           <Button variant='ghost' colorScheme='blue' onClick={() => addToCart(id)}>
             Add to cart
           </Button>
+          <IconButton
+            aria-label='Add to wishlist'
+            icon={isInWishlist ? <FaHeart className={heartAnimation} /> : <FaRegHeart />}
+            onClick={handleHeartClick}
+          />
         </ButtonGroup>
       </CardFooter>
     </Card>
@@ -95,7 +207,7 @@ CustomCard.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired, // Changed from array to string
   price: PropTypes.number.isRequired,
-  id: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
 };
 
 export default CustomCard;

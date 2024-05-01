@@ -31,8 +31,9 @@ urlpatterns = [
     path('products/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
 
     path('wishlists/', WishlistListCreateView.as_view(), name='wishlist-list-create'),
-    path('wishlists/<int:pk>/', WishlistDetailView.as_view(), name='wishlist-detail'),
-
+    path('wishlist/', WishlistDetailView.as_view(), name='wishlist-detail'),
+    path('wishlists/check/<int:product_id>/', ProductWishlistCheckView.as_view(), name='check-product-wishlist'),
+    
     path('carts/', CartListCreateView.as_view(), name='cart-list-create'),
     path('cart/', CartDetailView.as_view(), name='cart-detail'),
 

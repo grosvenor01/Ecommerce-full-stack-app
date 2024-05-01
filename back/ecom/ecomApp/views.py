@@ -74,15 +74,66 @@ class WishlistListCreateView(generics.ListCreateAPIView):
     queryset = wishlist.objects.all()
     serializer_class = WishlistSerializer1
 
-class WishlistDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = wishlist.objects.all()
+class WishlistDetailView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     serializer_class = WishlistSerializer
-    def get(self , request , pk):
-        user_id = self.kwargs['pk']
-        query = wishlist.objects.filter(user__id=user_id)
-        serializer = WishlistSerializer(query,many=True)
-        return Response(serializer.data,status = 200)
-        
+
+    def get_queryset(self):
+        return wishlist.objects.filter(user=self.request.user)
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data, status=200)
+
+    def post(self, request, *args, **kwargs):
+        product_id = request.data.get('product_id')
+        if not product_id:
+            return Response({'error': 'product_id is required'}, status=400)
+
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({'error': 'Invalid product_id'}, status=404)
+
+        wl, _ = wishlist.objects.get_or_create(user=request.user)
+        wl.products.add(product)
+        serializer = self.serializer_class(wl)
+        return Response(serializer.data, status=200)
+
+    def delete(self, request, *args, **kwargs):
+        product_id = request.query_params.get('product_id')
+        if not product_id:
+            return Response({'error': 'product_id is required'}, status=400)
+
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({'error': 'Invalid product_id'}, status=404)
+
+        wishlist = self.get_queryset().first()
+        if not wishlist:
+            return Response({'error': 'Wishlist not found'}, status=404)
+
+        wishlist.products.remove(product)
+        serializer = self.serializer_class(wishlist)
+        return Response(serializer.data, status=200)
+
+class ProductWishlistCheckView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def get(self, request, product_id):
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({'error': 'Invalid product_id'}, status=404)
+
+        wl = wishlist.objects.filter(user=request.user, products=product).exists()
+        print("Product in Wishlist:", wl)
+        return Response({'is_in_wishlist': wl}, status=200)
+
 class CartListCreateView(generics.ListCreateAPIView):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer

@@ -23,7 +23,13 @@ const Profile = () => {
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/wishlists/${userId}/`);
+        const response = await axios.get(`http://127.0.0.1:8000/wishlist/`,
+        {
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}` // Ensure requests are authenticated
+          }
+        }
+      );
         setWishlist(response.data);
       } catch (error) {
         console.error('Error fetching wishlist:', error);
@@ -75,7 +81,7 @@ const Profile = () => {
     wishlistItem.products.map(product => (
       <GridItem key={product.id} w='100%' > 
         <Cart
-        id={product.id}
+          id={product.id}
           imageUrl={product.photo}
           title={product.title}
           description={product.description}
