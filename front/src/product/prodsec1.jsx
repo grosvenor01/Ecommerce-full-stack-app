@@ -110,6 +110,25 @@ function Prodsec1() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
 
+  const addToCart = async (productId) => {
+    try {
+      const data = {
+        "product_id": productId, // Dynamic product ID to add
+        "quantity": 1  // Assuming a default quantity of 1
+      };
+      const token = localStorage.getItem('token'); // Get auth token from storage
+      console.log('Token:', token); // Print the token
+      const response = await axios.post('http://127.0.0.1:8000/cart-items/', data, {
+        headers: {
+          'Authorization': `Token ${token}` // Ensure requests are authenticated
+        }
+      });
+      console.log('Product added to cart:', response.data); // Print the response data
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+    }
+  };  
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -159,11 +178,9 @@ function Prodsec1() {
               <Image className='navlogohover' src={circule3} width={"30px"} h={"30px"} mr={"5px"} />
             </HStack>
             <HStack>
-            <Link to={`/cart/${id}`}> 
-              <Box className='navlogohover' border={"1px solid #E8E8E8"} padding={"1rem 2rem"} borderRadius={"13px"} mr={"1rem"}>
+              <Box className='navlogohover' border={"1px solid #E8E8E8"} padding={"1rem 2rem"} borderRadius={"13px"} mr={"1rem"} onClick={() => addToCart(id)}>
                 Add to cart
               </Box>
-              </Link>
 
               <Link to={`/buy/${id}`}> 
               

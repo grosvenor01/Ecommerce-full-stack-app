@@ -59,7 +59,6 @@ const Prodsec2 = () => {
 
   return (
     <Box mt={"2rem"} display={"flex" }justifyContent={"center"}>
-
         <VStack margin={"0 auto"} width={"90%"}  fontSize={"24px"} fontFamily={"Poppins , sans-serif"} >
             <HStack spacing={"2rem"} margin={"0 auto"}>
                 <Text>
