@@ -65,7 +65,16 @@ const Profile = () => {
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('userId');
 
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
   useEffect(() => {
+    if (!token) {
+      setLoading(false); // Ensures loading state is resolved if token is invalid
+      return;
+    }
+    
     const fetchData = async () => {
       try {
         const [userResponse, wishlistResponse, ordersResponse] = await Promise.all([
@@ -78,6 +87,11 @@ const Profile = () => {
         setOrders(ordersResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem('token'); // Clear token if it's expired or invalid
+          setLoading(false);
+          return;
+        }
       } finally {
         setLoading(false);
       }
@@ -85,10 +99,6 @@ const Profile = () => {
 
     fetchData();
   }, [userId, token]);
-
-  if (!token) {
-    return <Navigate to="/login" />;
-  }
 
 
   const handleLogout = () => {
