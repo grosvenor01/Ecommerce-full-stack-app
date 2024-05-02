@@ -1,0 +1,60 @@
+*,*::after,*::before{
+    box-sizing: border-box; 
+
+}
+
+.navimghover:hover{
+    transform: scale(1.05);
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+.navlogohover{
+    cursor: pointer;
+
+}
+.page-link{
+/* color: rgb(112, 112, 112); */
+color: rgb(255, 255, 255);
+height: 3rem;
+display: flex;
+justify-content: center;
+align-items: center;
+background-color: rgb(37, 37, 37);
+border: none; 
+
+}
+.sidecursorpoint{
+    cursor: pointer;
+}
+
+/* fontFamily={"Poppins , sans-serif"} */
+    /* border: [border-width] [border-style] [border-color]; */
+
+
+.king {
+    color: white;
+    box-shadow: 0 0 5px white;
+  }
+
+
+
+
+
+
+
+.spesial-button:hover{
+    background-color: rgb(68, 68, 68);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
