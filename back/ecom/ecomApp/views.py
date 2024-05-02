@@ -162,7 +162,13 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class OrderListCreateView(generics.ListCreateAPIView):
     queryset = Order.objects.all()
-    serializer_class = OrderSerializer1
+    serializer_class = OrderSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Only return orders for the currently authenticated user
+        return Order.objects.filter(user=self.request.user, total_price__gt=0)
 
 class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Order.objects.all()
