@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid, Text, VStack, Image, Spinner } from '@chakra-ui/react';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar';
 import Dachnav from './dachnav';
 import axios from 'axios';
@@ -55,16 +55,14 @@ const Profile = () => {
   const [orders, setOrders] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('userId');
-
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
 
   useEffect(() => {
     if (!token) {
       setLoading(false);
+      navigate('/login', { replace: true }); // Use navigate to redirect
       return;
     }
     
@@ -80,9 +78,10 @@ const Profile = () => {
         setOrders(ordersResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);
-        if (error.response && error.response.status === 401) {
-          localStorage.removeItem('token');
-          setLoading(false);
+        console.error('Error fetching data:', error);
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+          localStorage.removeItem('token'); // Clear token if it's expired or invalid
+          navigate('/login', { replace: true }); // Redirect to login
           return;
         }
       } finally {
@@ -91,7 +90,7 @@ const Profile = () => {
     };
 
     fetchData();
-  }, [userId, token]);
+  }, [userId, token, navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
